@@ -12,12 +12,29 @@ from selenium.webdriver.firefox.options import Options
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 
+# Initialize S3 client only if S3 environment variables are present
+aws_access_key = os.getenv('AWS_ACCESS_KEY')
+aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
+aws_region = os.getenv('AWS_REGION')
+target_bucket = os.getenv("TARGET_BUCKET")
+
+s3_client = None
+if aws_access_key and aws_secret_access_key and aws_region and target_bucket:
+    import boto3
+    s3_client = boto3.client(
+        's3',
+        aws_access_key_id=aws_access_key,
+        aws_secret_access_key=aws_secret_access_key,
+        region_name=aws_region
+    )
+    logging.info("S3 client initialized successfully.")
+
 def load_environment_variables():
-    username = os.getenv('uname')
-    password = os.getenv('passwd')
-    unifiip = os.getenv('unifiip')
-    backupInterval = int(os.getenv('backupInterval', '24'))  # default to 24 hours if not set
-    output_directory = os.getenv('outputDirectory', os.path.expanduser('~/Downloads'))  # default to ~/Downloads if not set
+    username = os.getenv('USERNAME')
+    password = os.getenv('PASSWORD')
+    unifiip = os.getenv('UNIFI_IP')
+    backupInterval = int(os.getenv('BACKUP_INTERVAL', os.getenv('backupInterval', '24')))  # default to 24 hours if not set
+    output_directory = os.getenv('OUTPUT_DIRECTORY', os.getenv('outputDirectory', os.path.expanduser('~/Downloads')))  # default to ~/Downloads if not set
     return username, password, unifiip, backupInterval, output_directory
 
 def sleep_hours(hours):
@@ -51,6 +68,13 @@ def login_to_unifi(driver, username, password, unifiip):
         password_field.submit()
         time.sleep(2)
 
+def upload_to_s3(backup_file, key_name):
+    if s3_client:
+        s3_client.upload_file(Filename=backup_file, Bucket=target_bucket, Key=key_name)
+        logging.info("File upload to S3 successfully")
+    else:
+        logging.warning("S3 client is not initialized. Skipping S3 upload.")
+
 def perform_backup(driver, output_directory):
     console_settings = driver.find_element(By.CSS_SELECTOR, '[data-testid="console-settings"]')
     logging.info("Found Console Settings.")
@@ -61,7 +85,7 @@ def perform_backup(driver, output_directory):
     logging.info("Backup field found, backing up now.")
     backup_button.click()
     logging.info("Waiting for backup to download...")
-    time.sleep(30)
+    time.sleep(15)
     
     # Ensure the output directory exists
     if not os.path.exists(output_directory):
@@ -78,6 +102,9 @@ def perform_backup(driver, output_directory):
     
     shutil.move(latest_file, new_file_path)
     logging.info(f"Backup completed successfully. File saved as {new_file_path}")
+
+    # Upload to S3 if enabled
+    upload_to_s3(new_file_path, new_file_name)
 
 def main():
     username, password, unifiip, backupInterval, output_directory = load_environment_variables()

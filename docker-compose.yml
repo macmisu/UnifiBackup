@@ -1,0 +1,16 @@
+services:
+  unifibackup:
+    container_name: unifibackup
+    image: 'jeffhardyski/unifibackup:0.1'
+    environment:
+      # AWS_ACCESS_KEY: ""
+      # AWS_SECRET_ACCESS_KEY: ""
+      # AWS_REGION: ""
+      # TARGET_BUCKET: "" # S3 Bucket Name
+      USERNAME: "" # Comment out if you do not need to set username
+      PASSWORD: "" 
+      UNIFI_IP: "" # Router IP Address
+      BACKUP_INTERVAL: "72" # Defaults to 24 Hours
+      OUTPUT_DIRECTORY: "/output" # Defaults to "~/Downloads"
+    restart: unless-stopped 
+     
