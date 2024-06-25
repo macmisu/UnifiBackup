@@ -1,29 +1,26 @@
 # Unifi Backup Automation
 
-The Unifi API spec seems to be a bit **dense**..so I chose the worst route of them all and automated backups through Selenium.
+The Unifi API spec seems to be a bit **dense**..so I chose the worst route of them all and automated backups through Selenium. UnifiBackup allows you to backup your Unifi network configuration through selenium and upload backup files to S3 (optional).
 
-## Overview
+## docker-compose.yml:
 
-This project provides an automated solution for backing up your Unifi Controller using Selenium WebDriver. It logs into the Unifi Controller's web interface, initiates a backup, and saves the backup file. Optionally, the backup file can be uploaded to an S3 bucket.
-
-## Prerequisites
-
-- Docker
-- Docker Compose
-
-## Environment Variables
-
-The following environment variables need to be set for the script to work:
-
-- `USERNAME`: Username for logging into the Unifi Controller (optional)
-- `PASSWORD`: Password for logging into the Unifi Controller
-- `UNIFI_IP`: IP address of the Unifi Controller
-- `BACKUP_INTERVAL`: Interval in hours between each backup (default: 24 hours)
-- `OUTPUT_DIRECTORY`: Directory to save the backup files (default: `~/Downloads`)
-- `AWS_ACCESS_KEY`: AWS access key (optional, required if uploading to S3)
-- `AWS_SECRET_ACCESS_KEY`: AWS secret access key (optional, required if uploading to S3)
-- `AWS_REGION`: AWS region (optional, required if uploading to S3)
-- `TARGET_BUCKET`: S3 bucket name to upload the backup file (optional)
+```yaml
+services:
+  unifibackup:
+    container_name: unifibackup
+    image: 'jeffhardyski/unifibackup:0.1'
+    environment:
+      # AWS_ACCESS_KEY: ""
+      # AWS_SECRET_ACCESS_KEY: ""
+      # AWS_REGION: ""
+      # TARGET_BUCKET: "" # S3 Bucket Name
+      USERNAME: "" # Comment out if you do not need to set username
+      PASSWORD: "" 
+      UNIFI_IP: "" # Router IP Address
+      BACKUP_INTERVAL: "72" # Defaults to 24 Hours
+      OUTPUT_DIRECTORY: "/output" # Defaults to "~/Downloads"
+    restart: unless-stopped 
+```
 
 ## Usage
 
@@ -46,32 +43,20 @@ The following environment variables need to be set for the script to work:
    docker-compose up -d
    ```
 
-## Dockerfile
+## Environment Variables
 
-The Dockerfile used to build the Docker image:
+The following environment variables need to be set for the script to work:
 
-```dockerfile
-# Use the official Python image as a base image
-FROM python:3.11-slim
+- `USERNAME`: Username for logging into the Unifi Controller (optional)
+- `PASSWORD`: Password for logging into the Unifi Controller
+- `UNIFI_IP`: IP address of the Unifi Controller
+- `BACKUP_INTERVAL`: Interval in hours between each backup (default: 24 hours)
+- `OUTPUT_DIRECTORY`: Directory to save the backup files (default: `~/Downloads`)
+- `AWS_ACCESS_KEY`: AWS access key (optional, required if uploading to S3)
+- `AWS_SECRET_ACCESS_KEY`: AWS secret access key (optional, required if uploading to S3)
+- `AWS_REGION`: AWS region (optional, required if uploading to S3)
+- `TARGET_BUCKET`: S3 bucket name to upload the backup file (optional)
 
-RUN apt-get update \
-    && apt-get install -y firefox-esr \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install required packages
-RUN pip install selenium
-RUN pip install webdriver_manager
-RUN pip install boto3
-
-# Set the working directory
-WORKDIR /app
-
-# Copy your Selenium WebDriver script into the container
-COPY unifibackup.py .
-
-# Define the command to execute your script
-CMD ["python", "unifibackup.py"]
-```
 
 ## Script Explanation
 
