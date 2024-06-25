@@ -32,8 +32,8 @@ The following environment variables need to be set for the script to work:
 1. **Clone the repository**
 
    ```sh
-   git clone <repository_url>
-   cd <repository_directory>
+   git clone https://github.com/kwehen/UnifiBackup.git
+   cd UnifiBackup
    ```
 
 2. **Build and run the Docker container**
