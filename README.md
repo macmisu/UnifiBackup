@@ -72,10 +72,6 @@ This script performs the following steps:
 6. Uploads the backup file to an S3 bucket (if configured).
 7. Repeats the process at the specified interval.
 
-### Logging
-
-The script uses Python's built-in logging module to log information and errors.
-
 ## Contributing
 
 Contributions are welcome! Please submit a pull request or open an issue to discuss any changes.
