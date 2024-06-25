@@ -1,5 +1,3 @@
-Sure, here's the updated README with a brief overview of the Docker Compose file:
-
 # Unifi Backup Automation
 
 The Unifi API spec seems to be a bit **dense**..so I chose the worst route of them all and automated backups through Selenium.
