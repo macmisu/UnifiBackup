@@ -17,4 +17,4 @@ WORKDIR /app
 COPY unifibackup.py .
 
 # Define the command to execute your script
-CMD ["python", "unifibackup.py"]
+ENTRYPOINT ["python", "unifibackup.py"]
