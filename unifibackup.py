@@ -82,7 +82,7 @@ def perform_backup(driver, output_directory):
     console_settings.click()
     time.sleep(1)
     
-    backup_button = driver.find_element(By.XPATH, '//span[contains(@class, "content__VCR3r9bc") and text()="Back Up Now"]')
+    backup_button = driver.find_element(By.XPATH, '//button[contains(@class, "button__VCR3r9bC")]//span[text()="Back Up Now"]')
     logging.info("Backup field found, backing up now.")
     backup_button.click()
     logging.info("Waiting for backup to download...")
