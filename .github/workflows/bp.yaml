@@ -21,10 +21,17 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Build and push
+      - name: Build and push with version tag
         uses: docker/build-push-action@v5
         with:
           context: .
           platforms: linux/amd64, linux/arm64
           push: true
-          tags: jeffhardyski/unifibackup:0.1
+          tags: jeffhardyski/unifibackup:{{ github.ref_name }}
+      - name: Build and push with latest tag
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          platforms: linux/amd64, linux/arm64
+          push: true
+          tags: jeffhardyski/unifibackup:latest
