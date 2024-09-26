@@ -1,7 +1,7 @@
 services:
   unifibackup:
     container_name: unifibackup
-    image: 'jeffhardyski/unifibackup:0.1'
+    image: 'jeffhardyski/unifibackup:<version-or-latest>'
     environment:
       # AWS_ACCESS_KEY: ""
       # AWS_SECRET_ACCESS_KEY: ""
