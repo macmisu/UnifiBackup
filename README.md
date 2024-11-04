@@ -1,4 +1,4 @@
-# Unifi Backup Automation
+# Unifi Backup
 
 The Unifi API spec seems to be a bit **dense**..so I chose the worst route of them all and automated backups through Selenium. UnifiBackup allows you to backup your Unifi network configuration through selenium and upload backup files to S3 (optional).
 
