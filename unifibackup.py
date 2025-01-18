@@ -77,7 +77,7 @@ def upload_to_s3(backup_file, key_name):
         logging.warning("S3 client is not initialized. Skipping S3 upload.")
 
 def perform_backup(driver, output_directory):
-    console_settings = driver.find_element(By.CSS_SELECTOR, '[data-testid="console-settings"]')
+    console_settings = driver.find_element(By.CSS_SELECTOR, '[data-testid="console-plane"]')
     logging.info("Found Console Settings.")
     console_settings.click()
     time.sleep(1)
